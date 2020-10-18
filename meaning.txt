@@ -1,0 +1,5 @@
+0: empty space
+1: player 1 occupied
+2: player 1 corner
+3: player 2 occupied
+5: player 2 corner
