@@ -27,13 +27,16 @@ class Piece:
     def rotate(self):
         self.arr = np.rot90(self.arr)
 
+    def flip(self):
+        self.arr = np.flip(self.arr, 1)
+
 #removes spaces and newlines from a string
 def removeSpaceNewline(s):
     s = s.replace(' ', '')
     s = s.replace('\n', '')
     return s
 
-x = Piece("i5p1.txt")
+x = Piece("l4p1.txt")
 print(x.arr)
-x.rotate()
+x.flip()
 print(x.arr)
