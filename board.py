@@ -119,7 +119,7 @@ def main():
                     print('1 flip')
                 #Previous Piece Button P2
                 if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*9 and mousePos[1] < sizeNode*10):
-                    print('1 previouspiece')
+                    print('2 previouspiece')
                 #Next Piece Button P2
                 elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*10 and mousePos[1] < sizeNode*11):
                     print('2 nextpiece')
