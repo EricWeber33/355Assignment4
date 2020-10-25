@@ -1,5 +1,6 @@
 #https://stackoverflow.com/questions/56984542/is-there-an-effiecient-way-of-making-a-function-to-drag-and-drop-multiple-pngs
 import pygame
+import os
 
 #Dimension variables
 sizeNode = 48
@@ -10,12 +11,15 @@ gamepadSizeX = widthWindow - (sizeNode*size)
 gamepadSizeY = (sizeNode*size)/2
 
 #Image surfaces
-player1Image = pygame.image.load('player1.png')
-player2Image = pygame.image.load('player2.png')
-nextPieceImage = pygame.image.load('nextPiece.png')
-rotateRightImage = pygame.image.load('rotateRight.png')
-rotateLeftImage = pygame.image.load('rotateLeft.png')
-flipImage = pygame.image.load('flip.png')
+currentPath = os.path.dirname(__file__)
+imagesPath = os.path.join(currentPath, 'images')
+player1Image = pygame.image.load(os.path.join(imagesPath, 'p1.png'))
+player2Image = pygame.image.load(os.path.join(imagesPath, 'p2.png'))
+previousPieceImage = pygame.image.load(os.path.join(imagesPath, 'previous.png'))
+nextPieceImage = pygame.image.load(os.path.join(imagesPath, 'next.png'))
+rotateLeftImage = pygame.image.load(os.path.join(imagesPath, 'rotateRight.png'))
+rotateRightImage = pygame.image.load(os.path.join(imagesPath, 'rotateLeft.png'))
+flipImage = pygame.image.load(os.path.join(imagesPath, 'flip.png'))
 
 def create_surface():
     board = pygame.Surface((sizeNode*size, sizeNode*size)) # size of surface
@@ -33,64 +37,40 @@ def create_gamepad_top():
     # the piece window
     board = pygame.Surface((gamepadSizeX, gamepadSizeY)) # size of surface
     pieceWindow = pygame.Rect(sizeNode*3, 0, gamepadSizeX-sizeNode*3, gamepadSizeY) # size and location of gamepad
-    pygame.draw.rect(board, pygame.Color('red'), pieceWindow) # draw top gamepad
+    pygame.draw.rect(board, pygame.Color('black'), pieceWindow) # draw top gamepad
     # Player Label
     board.blit(player1Image, (0,0))
+    # Previous Piece Button
+    board.blit(previousPieceImage, (0,sizeNode*2))
     # Next Piece Button
-    board.blit(nextPieceImage, (sizeNode*3,0))
+    board.blit(nextPieceImage, (0,sizeNode*3))
     # Rotate Right Button
-    board.blit(rotateRightImage, (sizeNode*4,0))
+    board.blit(rotateRightImage, (0,sizeNode*4))
     # Rotate Left Button
-    board.blit(rotateLeftImage, (sizeNode*5,0))
+    board.blit(rotateLeftImage, (0,sizeNode*5))
     # Flip Button
-    board.blit(flipImage, (sizeNode*6,0))
-#    myFont = pygame.font.Font('freesansbold.ttf', 36)
-#    playerLabel = myFont.render('Player 1', True, pygame.Color('blue'), pygame.Color('gray'))
-#    playerLabelRect = playerLabel.get_rect(top=0, left=0, width=sizeNode*3, height=sizeNode*3)
-#    board.blit(playerLabel, (0,0))
-    """# left arrow
-    leftArrow = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode) # size and location of nodes
-    pygame.draw.rect(board, pygame.Color('blue'), leftArrow) # draw a black or white node     
-    # right arrow
-    rightArrow = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode) # size and location of nodes
-    pygame.draw.rect(board, pygame.Color('red'), rightArrow) # draw a black or white node     
-    # rotate button
-    rotateButton = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode) # size and location of nodes
-    pygame.draw.rect(board, pygame.Color('orange'), rotateButton) # draw a black or white node     
-    # play button
-    playButton = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode) # size and location of nodes
-    pygame.draw.rect(board, pygame.Color('pink'), playButton) # draw a black or white node
-    """
+    board.blit(flipImage, (0,sizeNode*6))
+
     return board
 
 def create_gamepad_bottom():
     # the piece window
     board = pygame.Surface((gamepadSizeX, gamepadSizeY)) # size of surface
     pieceWindow = pygame.Rect(sizeNode*3, 0, gamepadSizeX-sizeNode*3, gamepadSizeY) # size and location of gamepad
-    pygame.draw.rect(board, pygame.Color('green'), pieceWindow) # draw top gamepad
+    pygame.draw.rect(board, pygame.Color('black'), pieceWindow) # draw top gamepad
     # Player Label
-    board.blit(player1Image, (0,0))
+    board.blit(player2Image, (0,0))
+    # Previous Piece Button
+    board.blit(previousPieceImage, (0,sizeNode*2))
     # Next Piece Button
-    board.blit(nextPieceImage, (sizeNode*3,0))
+    board.blit(nextPieceImage, (0,sizeNode*3))
     # Rotate Right Button
-    board.blit(rotateRightImage, (sizeNode*4,0))
+    board.blit(rotateRightImage, (0,sizeNode*4))
     # Rotate Left Button
-    board.blit(rotateLeftImage, (sizeNode*5,0))
+    board.blit(rotateLeftImage, (0,sizeNode*5))
     # Flip Button
-    board.blit(flipImage, (sizeNode*6,0))
-    """# left arrow
-    leftArrow = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode) # size and location of nodes
-    pygame.draw.rect(board, pygame.Color('blue'), leftArrow) # draw a black or white node     
-    # right arrow
-    rightArrow = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode) # size and location of nodes
-    pygame.draw.rect(board, pygame.Color('red'), rightArrow) # draw a black or white node     
-    # rotate button
-    rotateButton = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode) # size and location of nodes
-    pygame.draw.rect(board, pygame.Color('orange'), rotateButton) # draw a black or white node     
-    # play button
-    playButton = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode) # size and location of nodes
-    pygame.draw.rect(board, pygame.Color('pink'), playButton) # draw a black or white node
-    """
+    board.blit(flipImage, (0,sizeNode*6))    
+
     return board
 
 def create_board():
@@ -120,6 +100,39 @@ def main():
             if x.type == pygame.QUIT:
                 print('Thank You for Playing')
                 return
+            if x.type == pygame.MOUSEBUTTONDOWN:
+                mousePos = pygame.mouse.get_pos()
+                #Previous Piece Button P1
+                if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*2 and mousePos[1] < sizeNode*3):
+                    print('1 previouspiece')
+                #Next Piece Button P1
+                if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*3 and mousePos[1] < sizeNode*4):
+                    print('1 nextpiece')
+                #Rotate Left Button P1
+                elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*4 and mousePos[1] < sizeNode*5):
+                    print('1 rotateleft')
+                #Rotate Right Button P1
+                elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*5 and mousePos[1] < sizeNode*6):
+                    print('1 rotateright')
+                #Flip Button P1
+                elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*6 and mousePos[1] < sizeNode*7):
+                    print('1 flip')
+                #Previous Piece Button P2
+                if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*9 and mousePos[1] < sizeNode*10):
+                    print('1 previouspiece')
+                #Next Piece Button P2
+                elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*10 and mousePos[1] < sizeNode*11):
+                    print('2 nextpiece')
+                #Rotate Left Button P2
+                elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*11 and mousePos[1] < sizeNode*12):
+                    print('2 rotateleft')
+                #Rotate Right Button P2
+                elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*12 and mousePos[1] < sizeNode*13):
+                    print('2 rotateright')
+                #Flip Button P2
+                elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*13 and mousePos[1] < sizeNode*14):
+                    print('2 flip')
+                
         window.fill(pygame.Color('grey')) # gives window a grey background
         window.blit(surface, (0, 0)) # draws the window
         window.blit(gamepadTop, (heightWindow, 0)) # draws the gamepad
