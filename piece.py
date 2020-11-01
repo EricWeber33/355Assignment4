@@ -1,11 +1,11 @@
 import numpy as np
+import os
 
 class Piece:
-    arrFile = ""
-    arr = np.zeros((7, 7), np.short)
 
     def __init__(self, fileName):
         self.arrFile = fileName
+        self.arr = np.zeros((7, 7), np.short)
 
         #read the next line from arrFile
         file = open("tiles/" + self.arrFile, 'r')
@@ -22,10 +22,16 @@ class Piece:
             i += 1
             line = file.readline()
             line = removeSpaceNewline(line)
+            
+        file.close()
 
-    #rotate the shape in arr by 90 degrees
-    def rotate(self):
+    #rotate the shape in arr by 90 degrees right
+    def rotateRight(self):
         self.arr = np.rot90(self.arr)
+
+    #rotate the shape in arr by 90 degrees left
+    def rotateLeft(self):
+        self.arr = np.rot90(self.arr, -1)
 
     def flip(self):
         self.arr = np.flip(self.arr, 1)
@@ -35,8 +41,3 @@ def removeSpaceNewline(s):
     s = s.replace(' ', '')
     s = s.replace('\n', '')
     return s
-
-x = Piece("l4p1.txt")
-print(x.arr)
-x.flip()
-print(x.arr)
