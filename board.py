@@ -161,8 +161,8 @@ def clearGamepad(surf):
                     
 #draws a piece 'piece' on surface 'surf' in the color of player 'player'
 def drawPiece(x, y, piece, surf):
-    for i in range(gamepadGridSize):
-        for j in range(gamepadGridSize):
+    for i in range(len(piece.arr)):
+        for j in range(len(piece.arr[0])):
             if (piece.arr[i][j] == 1 or piece.arr[i][j] == 3):
                 rect = pygame.Rect(x + i*sizeNode, y + j*sizeNode, sizeNode, sizeNode)
                 pygame.draw.rect(surf, pygame.Color(player1Color if (piece.arr[i][j] == 1) else player2Color), rect)
