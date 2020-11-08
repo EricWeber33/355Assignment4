@@ -1,6 +1,7 @@
 #https://stackoverflow.com/questions/56984542/is-there-an-effiecient-way-of-making-a-function-to-drag-and-drop-multiple-pngs
 import pygame
 import os
+import copy
 from piece import Piece
 
 #Dimension variables
@@ -66,10 +67,32 @@ class Board:
         drawPiece(sizeNode*3,0,self.p2Array[self.p2Index], self.bottomSurf)
 
         #initialize board array
-        for y in range(size):
+        for y in range(size + 2):
             self.boardArray.append([])
-            for x in range(size):
+            for x in range(size + 2):
                 self.boardArray[y].append(0)
+
+        #initialize guard rows/cols in board array
+        for i in range(size + 2):
+            self.boardArray[-1][i] = 7
+
+        for i in range(size + 2):
+            self.boardArray[i][-1] = 7
+
+        for i in range(size + 2):
+            self.boardArray[size][i] = 7
+
+        for i in range(size + 2):
+            self.boardArray[i][size] = 7
+
+        #add guard pieces to be able to start game
+        self.boardArray[-1][-1] = 1
+        self.boardArray[size][-1] = 1
+        self.boardArray[size][size] = 3
+        self.boardArray[-1][size] = 3
+
+        # previous ghost piece
+        self.pGhost = copy.deepcopy(self.boardArray)
 
         #initialize gamepad arrays
         for y in range(gamepadGridSize):
@@ -154,6 +177,69 @@ class Board:
                     rect = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode)
                     pygame.draw.rect(surf, pygame.Color(player1Color if (arr[x][y] == 1) else player2Color), rect)
 
+    def drawBoard(self):
+        for y in range(size):
+            for x in range(size):
+                rect = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode) # size and location of nodes
+                if (self.boardArray[x][y] == 1):
+                    color = 'dodgerblue1'
+                elif (self.boardArray[x][y] == 3):
+                    color = 'firebrick1'
+                elif (self.boardArray[x][y] == 8):
+                    color = 'green'
+                elif (self.boardArray[x][y] == 9):
+                    color = 'purple'
+                elif ((x % 2 == 0) and (y % 2 == 1) or (x % 2 == 1) and (y % 2 == 0)):
+                    color = 'light grey'
+                else:
+                    color = 'grey'
+                pygame.draw.rect(self.boardSurf, pygame.Color(color), rect) # draw a black or white node
+
+    def drawGhostPiece(self, x, y, piece, surf):
+        #initialize offset depending on parity of piece array rows/cols
+        pieceOffsetXL = len(piece.arr) // 2
+        pieceOffsetXR = len(piece.arr) // 2
+        if (len(piece.arr) % 2 == 0):
+            pieceOffsetXL = len(piece.arr) // 2
+            pieceOffsetXR = (len(piece.arr) - 1) // 2
+        pieceOffsetYT = len(piece.arr[0]) // 2
+        pieceOffsetYB = len(piece.arr[0]) // 2
+        if (len(piece.arr[0]) % 2 == 0):
+            pieceOffsetYT = len(piece.arr[0]) // 2
+            pieceOffsetYB = (len(piece.arr[0]) - 1) // 2
+        
+        # erase the previous ghost piece
+        for i in range(len(self.pGhost)):
+            for j in range(len(self.pGhost[0])):
+                if (self.pGhost[i][j] == 1 and i < size and j < size):
+                    self.boardArray[i][j] = 0
+
+        # check if we should draw the new ghost piece
+        drawGhost = True
+        for i in range(x, x + len(piece.arr)):
+            for j in range(y, y + len(piece.arr[0])):
+                temp = piece.arr[i - x][j - y]
+                if ((x - (pieceOffsetXL - 1)) < 0 or (x + pieceOffsetXR) > size or (y - (pieceOffsetYT - 1)) < 0 or (y + pieceOffsetYB) > size):
+                    drawGhost = False
+                    break
+                if ((self.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] == 1 or self.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] == 3) and (temp == 1 or temp == 3)):
+                    drawGhost = False
+                    break
+
+        #draw the new ghost piece
+        if (drawGhost):
+            for i in range(x, x + len(piece.arr)):
+                for j in range(y, y + len(piece.arr[0])):
+                    temp = piece.arr[i - x][j - y]
+                    if (temp == 1 and i - pieceOffsetXL < size and j - pieceOffsetYT < size):
+                        self.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] = 8
+                        self.pGhost[i-pieceOffsetXL][j-pieceOffsetYT] = 1
+                    elif (temp == 3 and i < size and j < size):
+                        self.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] = 9
+                        self.pGhost[i-pieceOffsetXL][j-pieceOffsetYT] = 1
+
+            self.drawBoard()
+
 #reset the gamepad grid to empty
 def clearGamepad(surf):
     rect = pygame.Rect(sizeNode*3, 0, sizeNode*gamepadGridSize, sizeNode*gamepadGridSize)
@@ -165,4 +251,4 @@ def drawPiece(x, y, piece, surf):
         for j in range(len(piece.arr[0])):
             if (piece.arr[i][j] == 1 or piece.arr[i][j] == 3):
                 rect = pygame.Rect(x + i*sizeNode, y + j*sizeNode, sizeNode, sizeNode)
-                pygame.draw.rect(surf, pygame.Color(player1Color if (piece.arr[i][j] == 1) else player2Color), rect)
+                pygame.draw.rect(surf, pygame.Color(player1Color if (piece.arr[i][j] == 1) else player2Color), rect)                    

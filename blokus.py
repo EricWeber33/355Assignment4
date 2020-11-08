@@ -8,6 +8,7 @@ def main():
     window = pygame.display.set_mode((widthWindow, heightWindow))
     b = Board()
     clock = pygame.time.Clock()
+    p = True # True: player 1, False: player 2
     while True:
         # checks if user closed window
         events = pygame.event.get()
@@ -67,14 +68,43 @@ def main():
                     clearGamepad(b.bottomSurf)
                     b.p2Array[b.p2Index].flip()
                     drawPiece(sizeNode*3,0,b.p2Array[b.p2Index], b.bottomSurf)
-                
+                #Place piece on grid
+                elif (mousePos[0] < heightWindow):
+                    makeMove(b, mousePos[0], mousePos[1], p)
+                    p = not p
+                    
+        #piece shows up on mouse if in grid
+        mousePos = pygame.mouse.get_pos()
+        if (mousePos[0] < heightWindow and mousePos[0] > 0 and mousePos[1] < heightWindow and mousePos[1] > 0):
+            ix = mousePos[0] // sizeNode
+            iy = mousePos[1] // sizeNode
+            b.drawGhostPiece(ix, iy, b.p1Array[b.p1Index], b.boardSurf)
+
         window.fill(pygame.Color('grey')) # gives window a grey background
         window.blit(b.boardSurf, (0, 0)) # draws the window
         window.blit(b.topSurf, (heightWindow, 0)) # draws the gamepad
         window.blit(b.bottomSurf, (heightWindow, heightWindow/2)) # draws the gamepad
         pygame.display.flip() # updates window
-        clock.tick(60)    
-    
+        clock.tick(22)
+
+# given mouse coordinates x, y, and player p (True = 1, False = 2), make move if legal
+def makeMove(b, x, y, p):
+    # initialize placeholder variables
+    if (p):
+        occ = 1
+        corner = 2
+        side = 5
+    else:
+        occ = 3
+        corner = 4
+        side = 6
+
+    # check if move is legal
+
+    # place piece
+
+#def placePiece(b, i, j):
+        
 if __name__ == '__main__':
     main()
     
