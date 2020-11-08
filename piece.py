@@ -5,14 +5,18 @@ class Piece:
 
     def __init__(self, fileName):
         self.arrFile = fileName
-        self.arr = np.zeros((7, 7), np.short)
+        #self.arr = np.zeros((7, 7), np.short)
 
         #read the next line from arrFile
         file = open("tiles/" + self.arrFile, 'r')
+        height = len(file.readlines())
+        file.seek(0,0)
         line = file.readline()
         line = removeSpaceNewline(line)
+        width = len(line)
 
         #read each line of file into 2d array arr
+        self.arr = np.zeros((height,width), np.short)
         i = 0
         while(line != ""):
             j = 0
@@ -41,3 +45,4 @@ def removeSpaceNewline(s):
     s = s.replace(' ', '')
     s = s.replace('\n', '')
     return s
+
