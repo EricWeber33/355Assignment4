@@ -38,6 +38,7 @@ class Board:
         # array of 2D arrays representing pieces
         self.p1Array = []
         self.p2Array = []
+
         # fill with pieces
         pieceFileArray = os.listdir('./tiles')
         pieceFileArray.sort()
@@ -156,30 +157,9 @@ class Board:
 
         return board
 
-    #draws rects on surface 'dest' based on array 'arr'
-    #dest is 0 for board, 1 for top gamepad, 2 for bottom gamepad
-    def arrayToBoard(self, arr, dest):
-        if (dest == 0):
-            dimensions = size
-            surf = self.boardSurf
-        elif (dest == 1):
-            dimensions = gamepadGridSize
-            surf = self.topSurf
-        else:
-            dimensions = gamepadGridSize
-            surf = self.bottomSurf
-
-        #draw rects on surface
-        #player 1 is dodgerblue1, player 2 is firebrick1
-        for x in range(dimensions):
-            for y in range(dimensions):
-                if (arr[x][y] == 1 or arr[x][y] == 3):
-                    rect = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode)
-                    pygame.draw.rect(surf, pygame.Color(player1Color if (arr[x][y] == 1) else player2Color), rect)
-
     def drawBoard(self):
-        for y in range(size):
-            for x in range(size):
+        for x in range(size):
+            for y in range(size):
                 rect = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode) # size and location of nodes
                 if (self.boardArray[x][y] == 1):
                     color = 'dodgerblue1'
@@ -200,19 +180,18 @@ class Board:
         pieceOffsetXL = len(piece.arr) // 2
         pieceOffsetXR = len(piece.arr) // 2
         if (len(piece.arr) % 2 == 0):
-            pieceOffsetXL = len(piece.arr) // 2
             pieceOffsetXR = (len(piece.arr) - 1) // 2
         pieceOffsetYT = len(piece.arr[0]) // 2
         pieceOffsetYB = len(piece.arr[0]) // 2
         if (len(piece.arr[0]) % 2 == 0):
-            pieceOffsetYT = len(piece.arr[0]) // 2
             pieceOffsetYB = (len(piece.arr[0]) - 1) // 2
         
         # erase the previous ghost piece
         for i in range(len(self.pGhost)):
             for j in range(len(self.pGhost[0])):
-                if (self.pGhost[i][j] == 1 and i < size and j < size):
+                if ((self.pGhost[i][j] == 8 or self.pGhost[i][j] == 9) and (self.boardArray[i][j] == 8 or self.boardArray[i][j] == 9) and i < size and j < size):
                     self.boardArray[i][j] = 0
+                    self.pGhost[i][j] = 0
 
         # check if we should draw the new ghost piece
         drawGhost = True
@@ -233,12 +212,12 @@ class Board:
                     temp = piece.arr[i - x][j - y]
                     if (temp == 1 and i - pieceOffsetXL < size and j - pieceOffsetYT < size):
                         self.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] = 8
-                        self.pGhost[i-pieceOffsetXL][j-pieceOffsetYT] = 1
+                        self.pGhost[i-pieceOffsetXL][j-pieceOffsetYT] = 8
                     elif (temp == 3 and i < size and j < size):
                         self.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] = 9
-                        self.pGhost[i-pieceOffsetXL][j-pieceOffsetYT] = 1
+                        self.pGhost[i-pieceOffsetXL][j-pieceOffsetYT] = 8
 
-            self.drawBoard()
+        self.drawBoard()            
 
 #reset the gamepad grid to empty
 def clearGamepad(surf):

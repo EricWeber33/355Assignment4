@@ -9,6 +9,7 @@ def main():
     b = Board()
     clock = pygame.time.Clock()
     p = True # True: player 1, False: player 2
+    placedCoords = [-1,-1]
     while True:
         # checks if user closed window
         events = pygame.event.get()
@@ -72,13 +73,19 @@ def main():
                 elif (mousePos[0] < heightWindow):
                     makeMove(b, mousePos[0], mousePos[1], p)
                     p = not p
+                    placedCoords = [mousePos[0]//sizeNode, mousePos[1]//sizeNode]
                     
         #piece shows up on mouse if in grid
         mousePos = pygame.mouse.get_pos()
-        if (mousePos[0] < heightWindow and mousePos[0] > 0 and mousePos[1] < heightWindow and mousePos[1] > 0):
-            ix = mousePos[0] // sizeNode
-            iy = mousePos[1] // sizeNode
-            b.drawGhostPiece(ix, iy, b.p1Array[b.p1Index], b.boardSurf)
+        if (mousePos[0]//sizeNode != placedCoords[0] and mousePos[1]//sizeNode != placedCoords[1]):
+            placedCoords = [-1,-1]
+            if (mousePos[0] < heightWindow and mousePos[0] > 0 and mousePos[1] < heightWindow and mousePos[1] > 0):
+                ix = mousePos[0] // sizeNode
+                iy = mousePos[1] // sizeNode
+                if (p):
+                    b.drawGhostPiece(ix, iy, b.p1Array[b.p1Index], b.boardSurf)
+                else:
+                    b.drawGhostPiece(ix, iy, b.p2Array[b.p2Index], b.boardSurf)
 
         window.fill(pygame.Color('grey')) # gives window a grey background
         window.blit(b.boardSurf, (0, 0)) # draws the window
@@ -94,16 +101,58 @@ def makeMove(b, x, y, p):
         occ = 1
         corner = 2
         side = 5
+        piece = b.p1Array[b.p1Index]
     else:
         occ = 3
         corner = 4
         side = 6
+        piece = b.p2Array[b.p2Index]
+
+    x = x // sizeNode
+    y = y // sizeNode
+
+    pieceOffsetXL = len(piece.arr) // 2
+    pieceOffsetXR = len(piece.arr) // 2
+    if (len(piece.arr) % 2 == 0):
+        pieceOffsetXR = (len(piece.arr) - 1) // 2
+    pieceOffsetYT = len(piece.arr[0]) // 2
+    pieceOffsetYB = len(piece.arr[0]) // 2
+    if (len(piece.arr[0]) % 2 == 0):
+        pieceOffsetYB = (len(piece.arr[0]) - 1) // 2
 
     # check if move is legal
+    inBounds = True
+    
+    # check bounds
+    for i in range(x, x + len(piece.arr)):
+        for j in range(y, y + len(piece.arr[0])):
+            temp = piece.arr[i - x][j - y]
+            if ((x - (pieceOffsetXL - 1)) < 0 or (x + pieceOffsetXR) > size or (y - (pieceOffsetYT - 1)) < 0 or (y + pieceOffsetYB) > size):
+                inBounds = False
+                break
+
+    # check if touching any sides
+    touchingSides = False
+    for i in range(x, x + len(piece.arr)):
+        for j in range(y, y + len(piece.arr[0])):
+            if (piece.arr[i - x][j - y] == side and b.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] == occ):
+                return
+            
+    # check if touching corner
+    touchingCorner = False
+    for i in range(x, x + len(piece.arr)):
+        for j in range(y, y + len(piece.arr[0])):
+            if (piece.arr[i - x][j - y] == corner and b.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] == occ):
+                touchingCorner = True
+                break
 
     # place piece
-
-#def placePiece(b, i, j):
+    if (inBounds and touchingCorner and not touchingSides):
+        for i in range(x, x + len(piece.arr)):
+            for j in range(y, y + len(piece.arr[0])):
+                if (piece.arr[i - x][j - y] == occ):
+                    b.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] = occ
+        b.drawBoard()
         
 if __name__ == '__main__':
     main()
