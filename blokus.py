@@ -10,79 +10,125 @@ def main():
     clock = pygame.time.Clock()
     p = True # True: player 1, False: player 2
     placedCoords = [-1,-1]
-    while True:
+    p1Pass = False
+    p2Pass = False
+    gameOver = False
+
+    # draw diagnostics to start
+    drawDiagnostics(b)
+    
+    while not gameOver:        
         # checks if user closed window
         events = pygame.event.get()
+        if (p1Pass and p2Pass):
+            gameOver = True
+            break
         for x in events:
             if x.type == pygame.QUIT:
                 print('Thank You for Playing')
                 return
             if x.type == pygame.MOUSEBUTTONDOWN:
                 mousePos = pygame.mouse.get_pos()
+                #Pass Button P1
+                if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode and mousePos[1] < sizeNode*2):
+                    p = not p
+                    p1Pass = True
                 #Previous Piece Button P1
                 if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*2 and mousePos[1] < sizeNode*3):
                     prevPiece(b, True)
+                    drawDiagnostics(b)
                 #Next Piece Button P1
                 if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*3 and mousePos[1] < sizeNode*4):
                     nextPiece(b, True)
+                    drawDiagnostics(b)
                 #Rotate Left Button P1
                 elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*4 and mousePos[1] < sizeNode*5):
                     clearGamepad(b.topSurf)
                     b.p1Array[b.p1Index].rotateLeft()
                     drawPiece(sizeNode*3,0,b.p1Array[b.p1Index], b.topSurf)
+                    drawDiagnostics(b)
                 #Rotate Right Button P1
                 elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*5 and mousePos[1] < sizeNode*6):
                     clearGamepad(b.topSurf)
                     b.p1Array[b.p1Index].rotateRight()
                     drawPiece(sizeNode*3,0,b.p1Array[b.p1Index], b.topSurf)
+                    drawDiagnostics(b)
                 #Flip Button P1
                 elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*6 and mousePos[1] < sizeNode*7):
                     clearGamepad(b.topSurf)
                     b.p1Array[b.p1Index].flip()
                     drawPiece(sizeNode*3,0,b.p1Array[b.p1Index], b.topSurf)
+                    drawDiagnostics(b)
+                #Pass Button P1
+                if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*8 and mousePos[1] < sizeNode*9):
+                    p = not p
+                    p2Pass = True
                 #Previous Piece Button P2
                 if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*9 and mousePos[1] < sizeNode*10):
                     prevPiece(b, False)
+                    drawDiagnostics(b)
                 #Next Piece Button P2
                 elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*10 and mousePos[1] < sizeNode*11):
                     nextPiece(b, False)
+                    drawDiagnostics(b)
                 #Rotate Left Button P2
                 elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*11 and mousePos[1] < sizeNode*12):
                     clearGamepad(b.bottomSurf)
                     b.p2Array[b.p2Index].rotateLeft()
                     drawPiece(sizeNode*3,0,b.p2Array[b.p2Index], b.bottomSurf)
+                    drawDiagnostics(b)
                 #Rotate Right Button P2
                 elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*12 and mousePos[1] < sizeNode*13):
                     clearGamepad(b.bottomSurf)
                     b.p2Array[b.p2Index].rotateRight()
                     drawPiece(sizeNode*3,0,b.p2Array[b.p2Index], b.bottomSurf)
+                    drawDiagnostics(b)
                 #Flip Button P2
                 elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*13 and mousePos[1] < sizeNode*14):
                     clearGamepad(b.bottomSurf)
                     b.p2Array[b.p2Index].flip()
                     drawPiece(sizeNode*3,0,b.p2Array[b.p2Index], b.bottomSurf)
+                    drawDiagnostics(b)
                 #Place piece on grid
                 elif (mousePos[0] < heightWindow):
+                    #Once a player has passed, their playing days are over
+                    if (p):
+                        if (p1Pass):
+                            break
+                    if (not p):
+                        if (p2Pass):
+                            break
+
+                    #Check legal move and make it if so
                     legalMove = makeMove(b, mousePos[0], mousePos[1], p)
                     if (legalMove):
-                        if (p and len(b.p1Array > 1)):
+                        if (p and len(b.p1Array) > 1):
                             del b.p1Array[b.p1Index]
                             b.p1Index = (b.p1Index - 1) % len(b.p1Array)
                             nextPiece(b, True)
-                            p = not p
-                        elif (not p and len(b.p2Array > 1)):
+                            if (not p2Pass):
+                                p = not p
+                        elif (not p and len(b.p2Array) > 1):
                             del b.p2Array[b.p2Index]
                             b.p2Index = (b.p2Index - 1) % len(b.p2Array)
                             nextPiece(b, False)
-                            p = not p
+                            if (not p1Pass):
+                                p = not p
                         elif (p):
                             del b.p1Array[b.p1Index]
                             clearGamepad(b.topSurf)
-                            p = not p
+                            p1Pass = True
+                            if (not p2Pass):
+                                p = not p
                         elif(not p):
                             del b.p2Array[b.p2Index]
                             clearGamepad(b.bottomSurf)
-                            p = not p
+                            p2Pass = True
+                            if (not p1Pass):
+                                p = not p
+
+                    calcDiagnostics(b)
+                    drawDiagnostics(b)    
                     placedCoords = [mousePos[0]//sizeNode, mousePos[1]//sizeNode]
                     
         #piece shows up on mouse if in grid
@@ -92,9 +138,9 @@ def main():
             if (mousePos[0] < heightWindow and mousePos[0] > 0 and mousePos[1] < heightWindow and mousePos[1] > 0):
                 ix = mousePos[0] // sizeNode
                 iy = mousePos[1] // sizeNode
-                if (p):
+                if (p and not p1Pass):
                     b.drawGhostPiece(ix, iy, b.p1Array[b.p1Index], b.boardSurf)
-                else:
+                elif (not p2Pass):
                     b.drawGhostPiece(ix, iy, b.p2Array[b.p2Index], b.boardSurf)
 
         window.fill(pygame.Color('grey')) # gives window a grey background
@@ -103,6 +149,19 @@ def main():
         window.blit(b.bottomSurf, (heightWindow, heightWindow/2)) # draws the gamepad
         pygame.display.flip() # updates window
         clock.tick(22)
+        
+    #end game screen
+    endGameSurf = b.create_endgame()
+    window.blit(b.boardSurf, (0, 0)) # draws the window
+    while (True):
+        events = pygame.event.get()
+        for x in events:
+            if x.type == pygame.QUIT:
+                print('Thank You for Playing')
+                return
+        window.blit(endGameSurf, (heightWindow, 0))
+        pygame.display.flip() # updates window
+        clock.tick(24)
 
 # given mouse coordinates x, y, and player p (True = 1, False = 2), make move if legal
 def makeMove(b, x, y, p):
