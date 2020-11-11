@@ -30,7 +30,7 @@ def main():
             if x.type == pygame.MOUSEBUTTONDOWN:
                 mousePos = pygame.mouse.get_pos()
                 #Pass Button P1
-                if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode and mousePos[1] < sizeNode*2):
+                if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode and mousePos[1] < sizeNode*2 and not p1Pass):
                     p = not p
                     p1Pass = True
                 #Previous Piece Button P1
@@ -59,8 +59,8 @@ def main():
                     b.p1Array[b.p1Index].flip()
                     drawPiece(sizeNode*3,0,b.p1Array[b.p1Index], b.topSurf)
                     drawDiagnostics(b)
-                #Pass Button P1
-                if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*8 and mousePos[1] < sizeNode*9):
+                #Pass Button P2
+                if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*8 and mousePos[1] < sizeNode*9 and not p2Pass):
                     p = not p
                     p2Pass = True
                 #Previous Piece Button P2

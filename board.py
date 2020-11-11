@@ -128,16 +128,12 @@ class Board:
         return board
 
     def create_endgame(self):
-        for r in self.boardArray:
-            print(r)
         # erase the previous ghost piece
         for i in range(len(self.pGhost)):
             for j in range(len(self.pGhost[0])):
                 if ((self.pGhost[i][j] == 8 or self.pGhost[i][j] == 9) and (self.boardArray[i][j] == 8 or self.boardArray[i][j] == 9) and i < size and j < size):
                     self.boardArray[i][j] = 0
                     self.pGhost[i][j] = 0
-        for r in self.boardArray:
-            print(r)
         self.drawBoard()
         
         # set up steps
