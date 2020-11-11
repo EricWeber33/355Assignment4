@@ -21,14 +21,10 @@ def main():
                 mousePos = pygame.mouse.get_pos()
                 #Previous Piece Button P1
                 if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*2 and mousePos[1] < sizeNode*3):
-                    clearGamepad(b.topSurf)
-                    b.p1Index = (b.p1Index - 1) % 21
-                    drawPiece(sizeNode*3,0,b.p1Array[b.p1Index], b.topSurf)
+                    prevPiece(b, True)
                 #Next Piece Button P1
                 if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*3 and mousePos[1] < sizeNode*4):
-                    clearGamepad(b.topSurf)
-                    b.p1Index = (b.p1Index + 1) % 21
-                    drawPiece(sizeNode*3,0,b.p1Array[b.p1Index], b.topSurf)
+                    nextPiece(b, True)
                 #Rotate Left Button P1
                 elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*4 and mousePos[1] < sizeNode*5):
                     clearGamepad(b.topSurf)
@@ -46,14 +42,10 @@ def main():
                     drawPiece(sizeNode*3,0,b.p1Array[b.p1Index], b.topSurf)
                 #Previous Piece Button P2
                 if (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*9 and mousePos[1] < sizeNode*10):
-                    clearGamepad(b.bottomSurf)
-                    b.p2Index = (b.p2Index - 1) % 21
-                    drawPiece(sizeNode*3,0,b.p2Array[b.p2Index], b.bottomSurf)
+                    prevPiece(b, False)
                 #Next Piece Button P2
                 elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*10 and mousePos[1] < sizeNode*11):
-                    clearGamepad(b.bottomSurf)
-                    b.p2Index = (b.p2Index + 1) % 21
-                    drawPiece(sizeNode*3,0,b.p2Array[b.p2Index], b.bottomSurf)
+                    nextPiece(b, False)
                 #Rotate Left Button P2
                 elif (mousePos[0] > heightWindow and mousePos[0] < heightWindow + sizeNode*3 and mousePos[1] > sizeNode*11 and mousePos[1] < sizeNode*12):
                     clearGamepad(b.bottomSurf)
@@ -71,8 +63,26 @@ def main():
                     drawPiece(sizeNode*3,0,b.p2Array[b.p2Index], b.bottomSurf)
                 #Place piece on grid
                 elif (mousePos[0] < heightWindow):
-                    makeMove(b, mousePos[0], mousePos[1], p)
-                    p = not p
+                    legalMove = makeMove(b, mousePos[0], mousePos[1], p)
+                    if (legalMove):
+                        if (p and len(b.p1Array > 1)):
+                            del b.p1Array[b.p1Index]
+                            b.p1Index = (b.p1Index - 1) % len(b.p1Array)
+                            nextPiece(b, True)
+                            p = not p
+                        elif (not p and len(b.p2Array > 1)):
+                            del b.p2Array[b.p2Index]
+                            b.p2Index = (b.p2Index - 1) % len(b.p2Array)
+                            nextPiece(b, False)
+                            p = not p
+                        elif (p):
+                            del b.p1Array[b.p1Index]
+                            clearGamepad(b.topSurf)
+                            p = not p
+                        elif(not p):
+                            del b.p2Array[b.p2Index]
+                            clearGamepad(b.bottomSurf)
+                            p = not p
                     placedCoords = [mousePos[0]//sizeNode, mousePos[1]//sizeNode]
                     
         #piece shows up on mouse if in grid
@@ -128,15 +138,14 @@ def makeMove(b, x, y, p):
         for j in range(y, y + len(piece.arr[0])):
             temp = piece.arr[i - x][j - y]
             if ((x - (pieceOffsetXL - 1)) < 0 or (x + pieceOffsetXR) > size or (y - (pieceOffsetYT - 1)) < 0 or (y + pieceOffsetYB) > size):
-                inBounds = False
-                break
+                return False
 
     # check if touching any sides
     touchingSides = False
     for i in range(x, x + len(piece.arr)):
         for j in range(y, y + len(piece.arr[0])):
             if (piece.arr[i - x][j - y] == side and b.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] == occ):
-                return
+                return False
             
     # check if touching corner
     touchingCorner = False
@@ -147,13 +156,36 @@ def makeMove(b, x, y, p):
                 break
 
     # place piece
-    if (inBounds and touchingCorner and not touchingSides):
+    if (touchingCorner):
         for i in range(x, x + len(piece.arr)):
             for j in range(y, y + len(piece.arr[0])):
                 if (piece.arr[i - x][j - y] == occ):
                     b.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] = occ
         b.drawBoard()
-        
+        return True
+
+    return False
+
+def nextPiece(b, p):
+    if (p):
+        clearGamepad(b.topSurf)
+        b.p1Index = (b.p1Index + 1) % len(b.p1Array)
+        drawPiece(sizeNode*3,0,b.p1Array[b.p1Index], b.topSurf)
+    else:
+        clearGamepad(b.bottomSurf)
+        b.p2Index = (b.p2Index + 1) % len(b.p2Array)
+        drawPiece(sizeNode*3,0,b.p2Array[b.p2Index], b.bottomSurf)
+
+def prevPiece(b, p):
+    if (p):
+        clearGamepad(b.topSurf)
+        b.p1Index = (b.p1Index - 1) % len(b.p1Array)
+        drawPiece(sizeNode*3,0,b.p1Array[b.p1Index], b.topSurf)
+    else:
+        clearGamepad(b.bottomSurf)
+        b.p2Index = (b.p2Index - 1) % len(b.p2Array)
+        drawPiece(sizeNode*3,0,b.p2Array[b.p2Index], b.bottomSurf)
+
 if __name__ == '__main__':
     main()
     

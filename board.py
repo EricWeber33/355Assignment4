@@ -25,8 +25,10 @@ rotateRightImage = pygame.image.load(os.path.join(imagesPath, 'rotateLeft.png'))
 flipImage = pygame.image.load(os.path.join(imagesPath, 'flip.png'))
 
 #Colors
-player1Color = 'dodgerblue1'
-player2Color = 'firebrick1'
+player1Color = 'dodgerblue4'
+player2Color = 'firebrick4'
+player1Ghost = 'dodgerblue1'
+player2Ghost = 'firebrick1'
 
 class Board:
 
@@ -162,13 +164,13 @@ class Board:
             for y in range(size):
                 rect = pygame.Rect(x*sizeNode, y*sizeNode, sizeNode, sizeNode) # size and location of nodes
                 if (self.boardArray[x][y] == 1):
-                    color = 'dodgerblue1'
+                    color = player1Color
                 elif (self.boardArray[x][y] == 3):
-                    color = 'firebrick1'
+                    color = player2Color
                 elif (self.boardArray[x][y] == 8):
-                    color = 'green'
+                    color = player1Ghost
                 elif (self.boardArray[x][y] == 9):
-                    color = 'purple'
+                    color = player2Ghost
                 elif ((x % 2 == 0) and (y % 2 == 1) or (x % 2 == 1) and (y % 2 == 0)):
                     color = 'light grey'
                 else:
@@ -213,9 +215,9 @@ class Board:
                     if (temp == 1 and i - pieceOffsetXL < size and j - pieceOffsetYT < size):
                         self.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] = 8
                         self.pGhost[i-pieceOffsetXL][j-pieceOffsetYT] = 8
-                    elif (temp == 3 and i < size and j < size):
+                    elif (temp == 3 and i - pieceOffsetXL < size and j - pieceOffsetYT < size):
                         self.boardArray[i-pieceOffsetXL][j-pieceOffsetYT] = 9
-                        self.pGhost[i-pieceOffsetXL][j-pieceOffsetYT] = 8
+                        self.pGhost[i-pieceOffsetXL][j-pieceOffsetYT] = 9
 
         self.drawBoard()            
 
