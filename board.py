@@ -1,4 +1,17 @@
 #https://stackoverflow.com/questions/56984542/is-there-an-effiecient-way-of-making-a-function-to-drag-and-drop-multiple-pngs
+
+# Meaning of boardArray values
+# 0: empty space
+# 1: player 1 occupied
+# 2: player 1 corner
+# 5: player 1 side
+# 3: player 2 occupied
+# 4: player 2 corner
+# 6: player 2 side
+# 7: guard cell
+# 8: player 1 ghost
+# 9: player 2 ghost
+
 import pygame
 import os
 import copy
