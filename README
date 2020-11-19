@@ -1,1 +1,160 @@
 Made by
+
+Contents:
+
+[0] intro
+
+[1] how to run program
+
+[2] how to play blokus
+
+[3] diagnostics provided
+
+
+---------------------------------------------------------------------------
+
+[0]: INTRO
+
+this project is a visualizer for playing a modified version of blokus duo
+which is a 2 player competitive board game
+
+---------------------------------------------------------------------------
+
+[1]: HOW TO RUN PROGRAM
+     1) make sure all the following libraries are installed
+	- pygame
+	- numpy
+     2) run blokus.py on command line as follows
+	- python3 blokus.py
+
+---------------------------------------------------------------------------
+
+[2]: RULES OF BLOKUS
+     this game is a slightly modified version of blokus duo
+     a short description of blokus and blokus duo can be found 
+     on this page: en.wikipedia.org/wiki/blokus
+
+     Blokus is a two player competitive strategy game.
+     Each player is given an identical set of tiles each tile
+     made up of between one and five 'cells'
+
+     	Examples of tiles:
+
+		'i1' tile:    +
+
+			      +
+		'w'  tile:    + +
+			        + +
+     
+     The objective of the game is to place more cells on the board
+     than your oponent.
+     
+     There are two players which take alternating turns starting with
+     player 1
+     How to make a move:
+     	a move consists of a player choosing any of their remaining
+        pieces and placing it on the board.
+	
+	A piece placement MUST follow these rules
+	EXCEPT on each players first turn
+
+	1) the piece placed MUST touch at least one corner of one of
+           the players other pieces.
+        2) the piece place can NOT touch any of the sides of one of
+           the players other pieces (your piece may touch the side
+	   of the opponents pieces though).
+	
+	On the first turn:
+	Player 1: Must place a piece such that a cell of the piece
+		  occupies either the top left or right cells of
+		  the board.
+	Player 2: Must place a piece sush that a cell of the piece
+		  occupies either the bottom left or right cells of
+		  the board.
+
+	If a player can not make a move they "Pass" which means that
+	they will not be playing any other pieces for the remainder
+	of the game.
+
+	The game ends when both players have passed and the score is
+	calculated by the sum of each players cells on the board.
+
+	THINGS TO NOTE:
+	1) the pieces can be played in any order.
+	2) once one player passes the other player can take as many
+	   turns in a row they need until they can no longer place
+           any of their pieces on the board.
+	3) on a move other than the first turn a player IS allowed
+	   to place a piece connecting to one of their respective 
+           starting corners
+	4) a player is allowed to click on the other players buttons
+	   (explained in 'PROGRAM CONTROLS') on their turn EXCEPT for
+           the other players pass button
+
+	RULE CHANGES FROM REGULAR BLOKUS DUO:
+	1) score is counted upwards based on number of cells placed
+           on board instead of counting down based on cells placed on
+	   board.
+	2) there are NO bonus points for placing the 'i1' or 'monomino'
+           piece last.
+	3) players start in the corner of the board instead of in the
+	   board (blokus duo normally starts in the center while standard
+           blokus starts in a corner)
+	
+	PROGRAM CONTROLS:
+	
+	The 14 * 14 board is the checkered area on the left side of the 
+	window upon launching the game.
+	
+	In the right portion of the screen there are two "gamepads"
+	one for each player.
+        
+        Each gamepad contains:
+		- A label for the player the gamepad is for
+		- A preview of the piece selected
+		- 6 buttons:
+			- pass: signals player has no more moves left
+			- next piece: cycles to players next piece
+			- previous piece: cycles to players previous piece
+			- rotate left: rotates piece -90 degrees
+			- rotate right: rotated piece 90 degrees
+			- flip piece: flips piece along an axis
+
+	When hovering the mouse over the board an imprint of the selected
+	piece of the player to move is drawn below the mouse snapped to 
+	the nearest board position.
+	
+	To make a move the player clicks the left mouse button.
+	The game will attempt to place the piece where the imprint is left
+	on the board. If the move is legal the piece is placed on the board
+	and the game removes the piece from the players remaining pieced 
+	and cycles to the next player. 
+	
+	NOTE: sometimes the imprint for certain pieces will
+	not be perfectly under the mouse, it has been tested that all pieces
+	can be placed in any valid location you may just have to move the
+	mouse to a slightly different postion.
+
+---------------------------------------------------------------------------
+[3] DIAGNOSTICS PROVIDED
+
+	During the game these diagnostics are visible for each player:
+	1) the players current score
+	2) the players number of remaining pieced
+        These diagnostics are visible on each players gamepad
+
+	After the game these diagnostics are visible for each player:
+	1) the players final score
+	2) the players void tiles
+	   A void tile is an empty cell on the board in which the player
+	   would not be able to place a piece due to its adjacency to the
+	   sides of another of the players piece.
+	   A more efficient packing of the players pieced will result in
+	   less void tiles.
+	3) the players number of remaining pieces
+	
+	Addtionally these diagnostics that are common between players are
+	shown 
+	1) the number of empty tiles remaining on the board
+	   (the board has 196 total tiles)
+	2) Which player won or if there is a draw
