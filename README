@@ -1,4 +1,4 @@
-Made by
+Made by Houston Le, Jacques Leong-Sit, Furmaan Sekhon, Eric Weber
 
 Contents:
 
@@ -68,7 +68,7 @@ which is a 2 player competitive board game
 	Player 1: Must place a piece such that a cell of the piece
 		  occupies either the top left or right cells of
 		  the board.
-	Player 2: Must place a piece sush that a cell of the piece
+	Player 2: Must place a piece such that a cell of the piece
 		  occupies either the bottom left or right cells of
 		  the board.
 
@@ -127,7 +127,7 @@ which is a 2 player competitive board game
 	To make a move the player clicks the left mouse button.
 	The game will attempt to place the piece where the imprint is left
 	on the board. If the move is legal the piece is placed on the board
-	and the game removes the piece from the players remaining pieced 
+	and the game removes the piece from the players remaining pieces 
 	and cycles to the next player. 
 	
 	NOTE: sometimes the imprint for certain pieces will
